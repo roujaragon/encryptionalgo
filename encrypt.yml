@@ -1,0 +1,33 @@
+---
+
+- hosts: all
+  become: true
+
+  vars:
+    image_path: "/home/rouj/encryptionalgo/encrypt/AbdomentCT/"
+    key: Encrypt123!
+
+  tasks:
+
+  - name: Update Systems
+    apt:
+      upgrade: dist
+      update_cache: yes
+
+  - name: Install OpenSSL
+    apt:
+      name:
+        -  openssl
+      state: latest
+
+  - name: Encrypting images
+    shell: |
+      "openssl bf -e -in {{ item }} -out {{ item }}.bf -k {{ key }}"
+    args:
+      chdir: "{{ image_path }}"
+    with_fileglob: "*.jpeg"
+
+  - name: Verify File Encryption
+    debug:
+      var: ansible_facts['files']
+

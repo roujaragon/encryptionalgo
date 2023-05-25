@@ -1,0 +1,17 @@
+---
+
+- name: Encrypt images
+  hosts: server
+  become: true
+
+  vars:
+    image_path: "/home/rouj/encryptionalgo/encrypt/AbdomentCT/"
+    key: Encrypt123!
+
+  tasks:
+
+    - name: Encrypting images
+      shell: "openssl bf -e -in {{ item }} -out {{ item }}.bf -k {{ key }}"
+      args:
+        chdir: "{{ image_path }}"
+      with_fileglob: "*.jpeg"
